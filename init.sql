@@ -1,0 +1,8 @@
+CREATE TABLE breed_images (
+  id SERIAL PRIMARY KEY,
+  label VARCHAR(40) NOT NULL,
+  image_base64 VARCHAR(120000) NOT NULL
+);
+
+INSERT INTO breed_images (label, image_base64)
+VALUES  ('Test Image 1', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890');
