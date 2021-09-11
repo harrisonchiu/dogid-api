@@ -10,11 +10,20 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors())
 
 
+// Send general information of this api at root
 app.get('/', (request, response) => {
-    response.json({ status: 'dogid-api running...' })
+    response.json({
+        info: 'DogID API is for handling server communications with the DogID app'
+    })
 })
 
-app.get('/breed_images', (request, response) => {
+// Send status of api app at main api path
+app.get('/api', (request, response) => {
+    response.json({ status: 'dogid-api running...'})
+})
+
+// Get all the breed images stored in database
+app.get('/api/breed_images', (request, response) => {
     pool.query('SELECT * FROM breed_images ORDER BY id ASC', (error, results) => {
         if (error) {
             throw error
@@ -23,18 +32,24 @@ app.get('/breed_images', (request, response) => {
     })
 })
 
-app.get('/breed_images/:id', (request, response) => {
+// Get a breed image by id stored in database
+app.get('/api/breed_images/:id', (request, response) => {
     const id = parseInt(request.params.id)
 
-    pool.query('SELECT * FROM breed_images WHERE id = $1', [id], (error, results) => {
-        if (error) {
-            throw error
+    pool.query(
+        'SELECT * FROM breed_images WHERE id = $1',
+        [id],
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            response.status(200).json(results.rows)
         }
-        response.status(200).json(results.rows)
-    })
+    )
 })
 
-app.post('/breed_images', (request, response) => {
+// Add a breed image to the database
+app.post('/api/breed_images', (request, response) => {
     const { label, image_base64 } = request.body
 
     pool.query(
@@ -49,7 +64,8 @@ app.post('/breed_images', (request, response) => {
     )
 })
 
-app.put('/breed_images/:id', (request, response) => {
+// Update a breed image in database by id
+app.put('/api/breed_images/:id', (request, response) => {
     const id = parseInt(request.params.id)
     const { label, image_base64 } = request.body
 
@@ -65,19 +81,23 @@ app.put('/breed_images/:id', (request, response) => {
     )
 })
 
-
-app.delete('/breed_images/:id', (request, response) => {
+// Delete a breed image entry in the database by id
+app.delete('/api/breed_images/:id', (request, response) => {
     const id = parseInt(request.params.id)
 
-    pool.query('DELETE FROM users WHERE id = $1', [id], (error, results) => {
-        if (error) {
-            throw error
+    pool.query(
+        'DELETE FROM breed_images WHERE id = $1',
+        [id],
+        (error, results) => {
+            if (error) {
+                throw error
+            }
+            response.status(200).send(`Image ${id} deleted`)
         }
-        response.status(200).send(`Image ${id} deleted`)
-    })
+    )
 })
 
 // Start server
 app.listen(process.env.PORT || 3000, () => {
-  console.log(`Server listening...`)
+    console.log(`Server listening...`)
 })
