@@ -48,6 +48,7 @@ if (environment === 'development') {
     throw new Error('Something went wrong with connecting to database')
 }
 
+
 module.exports = {
     pool,
     environment,
