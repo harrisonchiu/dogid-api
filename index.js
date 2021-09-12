@@ -1,14 +1,25 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
-const { pool } = require('./config')
+
+const { pool, environment } = require('./config')
+
 
 const app = express()
+const port = (process.env.PORT || 3000)
+
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors())
 
+/**
+ * TODO
+ * Delete all rows
+ * Set a limit x=50 of max images stored
+ * refactor code
+ * Make front page of api look better '/'
+ */
 
 // Send general information of this api at root
 app.get('/', (request, response) => {
@@ -19,11 +30,11 @@ app.get('/', (request, response) => {
 
 // Send status of api app at main api path
 app.get('/api', (request, response) => {
-    response.json({ status: 'dogid-api running...'})
+    response.json({ status: 'API running...'})
 })
 
 // Get all the breed images stored in database
-app.get('/api/breed_images', (request, response) => {
+app.get('/api/breed-images', (request, response) => {
     pool.query('SELECT * FROM breed_images ORDER BY id ASC', (error, results) => {
         if (error) {
             throw error
@@ -33,7 +44,7 @@ app.get('/api/breed_images', (request, response) => {
 })
 
 // Get a breed image by id stored in database
-app.get('/api/breed_images/:id', (request, response) => {
+app.get('/api/breed-images/:id', (request, response) => {
     const id = parseInt(request.params.id)
 
     pool.query(
@@ -49,23 +60,31 @@ app.get('/api/breed_images/:id', (request, response) => {
 })
 
 // Add a breed image to the database
-app.post('/api/breed_images', (request, response) => {
+app.post('/api/breed-images', (request, response) => {
     const { label, image_base64 } = request.body
 
-    pool.query(
-        'INSERT INTO breed_images (label, image_base64) VALUES ($1, $2)',
-        [label, image_base64],
-        (error, results) => {
-            if (error) {
-                throw error
-            }
-            response.status(201).send('Image added')
+    pool.query('SELECT count(*) FROM breed_images', (error, results) => {
+        if (error) {
+            throw error
         }
-    )
+        console.log(results.rows[0])
+        pool.query(
+            'INSERT INTO breed_images (label, image_base64) VALUES ($1, $2)',
+            [label, image_base64],
+            (error, results) => {
+                if (error) {
+                    throw error
+                }
+                response.status(201).send('Image added')
+            }
+        )
+    })
+
+
 })
 
 // Update a breed image in database by id
-app.put('/api/breed_images/:id', (request, response) => {
+app.put('/api/breed-images/:id', (request, response) => {
     const id = parseInt(request.params.id)
     const { label, image_base64 } = request.body
 
@@ -82,7 +101,7 @@ app.put('/api/breed_images/:id', (request, response) => {
 })
 
 // Delete a breed image entry in the database by id
-app.delete('/api/breed_images/:id', (request, response) => {
+app.delete('/api/breed-images/:id', (request, response) => {
     const id = parseInt(request.params.id)
 
     pool.query(
@@ -98,6 +117,6 @@ app.delete('/api/breed_images/:id', (request, response) => {
 })
 
 // Start server
-app.listen(process.env.PORT || 3000, () => {
-    console.log(`Server listening...`)
+app.listen(port, () => {
+    console.log(`API running on port ${port}...`)
 })
