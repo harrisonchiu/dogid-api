@@ -56,10 +56,16 @@ with about 170 images for each 120 breeds.
 The purpose of this API is to allow anyone (although specifically targeted for DogID users)
 to easily and **voluntarily** send different dog breed images along with the correct label.
 This helps expands the dog breed dataset and
-increases the amount of training data that neural networks can train off of.
+increases the amount of training data that neural networks can train off of
+(publicly available dog breed datasets are currently quite dissapointing in the number of images).
 A large training dataset is essential for improving neural networks' accuracy.
-It is made public for transparency on the data stored and to allow anyone to use image dataset,
-therefore send POST/PUT requests to API cautiously!
+
+It is made public for transparency on the data stored and to allow anyone to use image dataset.
+Therefore, send HTTP requests or any interactions with API cautiously!
+
+Anyone is allowed to add any type of data and the encoded base64 strings could be dangerous data.
+We do NOT condone this type of behaviour. We are also NOT responsible for any damages nor any wrong doings
+for any interactions with the database or APIs.
 
 The expanded dataset will help improve our dog breed neural network,
 [DogID Model (https://github.com/harrisonchiu/dogid-model)](https://github.com/harrisonchiu/dogid-model).
