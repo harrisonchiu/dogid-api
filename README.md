@@ -8,7 +8,8 @@
   <h1 align="center">DogID API</h1>
 
   <h3 align="center">
-    Node.js and Express RESTful API to store and manage dog images in PostgreSQL database
+    Node.js and Express RESTful API to store and manage dog images in PostgreSQL database\
+    API Down because Heroku ended free plans :(
     <br />
     <br />
     <a href="https://github.com/harrisonchiu/dogid-app">DogID App (Mobile App)</a>
